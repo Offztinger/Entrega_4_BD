@@ -5,7 +5,31 @@ import * as oracledb from 'oracledb';
 export class AppService {
   constructor(@Inject('ORACLE_CONNECTION') private pool: oracledb.Pool) { }
 
-  async useQuery(query: string, params: any[]): Promise<any> {
+  async getQuery(query: string, params: any[]): Promise<any> {
+    let connection: oracledb.Connection;
+    try {
+      console.log('Conexión establecida.');
+      console.log('Consulta a ejecutar:', query);
+      console.log('Parámetros:', params);
+
+      connection = await this.pool.getConnection();
+      const result = await connection.execute(query, params, {
+        outFormat: oracledb.OUT_FORMAT_OBJECT,
+      });
+
+      console.log('Resultado de la consulta:', result);
+      return result.rows;
+    } catch (err) {
+      console.error('Error al ejecutar la consulta:', err);
+      throw err;
+    } finally {
+      if (connection) {
+        await connection.close();
+      }
+    }
+  }
+
+  async createQuery(query: string, params: any[]): Promise<any> {
     let connection: oracledb.Connection;
     try {
       console.log('Consulta SQL:', query);
