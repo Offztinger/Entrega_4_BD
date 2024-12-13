@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
+  --background: #333334;
   --foreground: #ededed;
 }
 
@@ -11,4 +11,79 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ff6600;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #973d01;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ff6600;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #973d01;
+  border-radius: 10px;
+}
+
+::-moz-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-moz-scrollbar-thumb {
+  background-color: #ff6600;
+  border-radius: 10px;
+}
+
+::-moz-scrollbar-track {
+  background-color: #973d01;
+  border-radius: 10px;
+}
+
+::-ms-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-ms-scrollbar-thumb {
+  background-color: #ff6600;
+  border-radius: 10px;
+}
+
+::-ms-scrollbar-track {
+  background-color: #973d01;
+  border-radius: 10px;
+}
+
+::-o-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-o-scrollbar-thumb {
+  background-color: #ff6600;
+  border-radius: 10px;
+}
+
+::-o-scrollbar-track {
+  background-color: #973d01;
+  border-radius: 10px;
 }
