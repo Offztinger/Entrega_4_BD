@@ -3,8 +3,8 @@ import "../app/styles/index.css";
 import { Tooltip } from "react-tooltip";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { generosDisponibles, estadoActual } from "@/utils/constants";
-import { fetchAnimes, fetchAnimesByID, PostAnime, PutAnime } from "@/utils/axiosConfig";
+import { generosDisponibles, estadoActual, plataformasDisponibles, estudiosDisponibles } from "@/utils/constants";
+import { fetchAnimes, fetchAnimesByID, PostAnime, PutAnime, deleteAnime } from "@/utils/axiosConfig";
 
 export default function Home() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -12,13 +12,14 @@ export default function Home() {
   const [formulario, setFormulario] = useState({});
   const [animeData, setAnimeData] = useState([]);
   const [animeToEdit, setAnimeToEdit] = useState([]);
+  const [animeToDelete, setAnimeToDelete] = useState(null);
   const [selectedAnimeId, setSelectedAnimeId] = useState(null);
 
   const executeFunction = async (data) => {
     if (selectedAnimeId != null) {
       const response = await PutAnime(data)
     } else {
-      const response = await PostAnime(data)
+      const response = await PostAnime({...data, plataformas:{id:1, name:"Crunchyroll"}})
     }
     hideModal(setShowCreateModal);
   }
@@ -43,12 +44,12 @@ export default function Home() {
       const result = await fetchAnimesByID(selectedAnimeId)
       setAnimeToEdit(result);
     };
-    if(selectedAnimeId){
+    if (selectedAnimeId) {
       fetchData()
     }
   }, [selectedAnimeId]);
 
-  useEffect(() =>{
+  useEffect(() => {
     console.log(animeToEdit);
     if (animeToEdit) {
       setFormulario({
@@ -57,10 +58,10 @@ export default function Home() {
         imagen: animeToEdit.IMAGEN_ANV,
         puntuacion: animeToEdit.PUNTUACION_ANV,
         totalCapitulos: animeToEdit.TOTAL_CAPITULOS_ANV,
-        estado: {id: animeToEdit.ESTADOS_OBJ_DATA.ID_EST, name: animeToEdit.ESTADOS_OBJ_DATA.NOMBRE_EST},
+        /*estado: {id: animeToEdit.ESTADOS_OBJ_DATA.ID_EST, name: animeToEdit.ESTADOS_OBJ_DATA.NOMBRE_EST},
         genero: {id: animeToEdit.GENEROS_OBJ_DATA.ID_GEN, name: animeToEdit.GENEROS_OBJ_DATA.NOMBRE_GEN},
         plataformas: {id: animeToEdit.PLATAFORMAS_OBJ_DATA.ID_PTF, name: animeToEdit.ESTUDIOS_OBJ_DATA.NOMBRE_PTF},
-        estudios: {id: animeToEdit.ESTUDIOS_OBJ_DATA.ID_STD, name: animeToEdit.ESTUDIOS_OBJ_DATA.NOMBRE_STD},
+        estudios: {id: animeToEdit.ESTUDIOS_OBJ_DATA.ID_STD, name: animeToEdit.ESTUDIOS_OBJ_DATA.NOMBRE_STD},*/
       });
     }
   }, [animeToEdit]);
@@ -100,6 +101,17 @@ export default function Home() {
     setFormulario({
       ...formulario,
       estado: selectedEstado || { id: "", name: "" },
+    });
+  };
+
+  const handleEstudioChange = (e) => {
+    const selectedId = parseInt(e.target.value, 10);
+    const selectedEstudio = estudiosDisponibles.find(
+      (estudios) => estudios.id === selectedId
+    );
+    setFormulario({
+      ...formulario,
+      estudios: selectedEstudio || { id: "", name: "" },
     });
   };
 
@@ -165,7 +177,8 @@ export default function Home() {
             <Button
               variant="secondary"
               className="btn btn-dark"
-              onClick={() => hideModal(setShowDeleteModal)}
+              onClick={() =>
+                hideModal(setShowDeleteModal)}
             >
               ¡No!
             </Button>
@@ -173,7 +186,10 @@ export default function Home() {
               variant="primary"
               className="btn btn-warning"
               onClick={() => {
-                hideModal(setShowDeleteModal);
+                if (selectedAnimeId) {
+                  deleteAnime(selectedAnimeId);
+                  hideModal(setShowDeleteModal); 
+                }
               }}
             >
               Sí, deseo eliminarlo
@@ -251,7 +267,7 @@ export default function Home() {
               </select>
             </div>
             <div className="form-group">
-            <label>Estado Actual</label>
+              <label>Estado Actual</label>
               <select
                 name="estado"
                 className="form-control"
@@ -272,16 +288,14 @@ export default function Home() {
                 name="estudios"
                 className="form-control"
                 value={formulario.estudios || ""}
-                onChange={handleChange}
+                onChange={handleEstudioChange}
               >
                 <option value="">Seleccione un estudio</option>
-                <option value="Studio Ghibli">Studio Ghibli</option>
-                <option value="Toei Animation">Toei Animation</option>
-                <option value="Madhouse">Madhouse</option>
-                <option value="MAPPA">MAPPA</option>
-                <option value="Ufotable">Ufotable</option>
-                <option value="Kyoto Animation">Kyoto Animation</option>
-                <option value="Pierrot">Pierrot</option>
+                {estudiosDisponibles.map((estudios) => (
+                  <option key={estudios.id} value={estudios.id}>
+                    {estudios.name}
+                  </option>
+                  ))}
               </select>
             </div>
             <div className="form-group">
@@ -355,7 +369,7 @@ export default function Home() {
                     className="update-button"
                     data-tooltip-id="my-tooltip"
                     data-tooltip-content="Actualizar Anime"
-                    onClick={() => handleEdit(anime.ID_ANV)} // Pasar el ID del anime al hacer clic
+                    onClick={() => handleEdit(anime.ID_ANV)}
                   >
                     <i className="fas fa-pen"></i>
                   </button>
@@ -363,7 +377,10 @@ export default function Home() {
                     className="delete-button"
                     data-tooltip-id="my-tooltip"
                     data-tooltip-content="Eliminar Anime"
-                    onClick={() => setShowDeleteModal(true)}
+                    onClick={() => {
+                      setSelectedAnimeId(anime.ID_ANV);
+                      setShowDeleteModal(true);
+                    }}
                   >
                     <i className="fas fa-trash"></i>
                   </button>

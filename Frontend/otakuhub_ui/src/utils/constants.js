@@ -22,3 +22,17 @@ export const estadoActual = [
     {id: 3, name: "Pausado"},
     {id: 4, name: "Cancelado"},
   ];
+
+export const plataformasDisponibles = [
+  { id: 1, name: "Crunchyroll" },
+];
+
+export const estudiosDisponibles = [
+  { id: 1, name: "Studio Ghibli" },
+  { id: 2, name: "Toei Animation" },
+  { id: 3, name: "Madhouse" },
+  { id: 4, name: "MAPPA" },
+  { id: 5, name: "Ufotable" },
+  { id: 6, name: "Kyoto Animation" },
+  { id: 7, name: "Pierrot" },
+];
