@@ -1,5 +1,103 @@
 @import url('node_modules/@fortawesome/fontawesome-free/css/all.min.css');
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        z-index: 0;
+
+    }
+    60%{
+        background-color: rgba(0, 0, 0, 0);
+    }
+    100% {
+        opacity: 1;
+        z-index: 1024;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        background-color: rgba(0, 0, 0, 0);
+    }
+}
+
+.floating-modal {
+    color: black;
+    position: fixed;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0px 15px #d65600;
+    width: 25vw;
+    max-width: 100%;
+    padding: 2vh 1.5vw 2vh 1.5vw;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1040;
+}
+
+.modal-overlay.active {
+    opacity: 0;
+    animation: fadeIn 0.4s forwards ;
+}
+
+.modal-overlay.inactive {
+    animation: fadeOut 0.3s forwards ;
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.2vw;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: 2vh 1vw 1vh 0vw;
+}
+
+.btn {
+    margin: 0vh 1vw 0vh 0vw;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: red;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: rgb(150, 0, 0);
+}
+
+.btn-secondary {
+    background-color: blue;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: rgb(0, 0, 165);
+}
+
 .globalheader {
     vertical-align: middle;
     padding: 1vh 1.5vw 1vh 4.4vw;
@@ -25,90 +123,92 @@
 }
 
 .overcards {
-    padding: 2.2vh 5vw 0vh 4.3vw;
-    justify-self: left;
+    padding: 2.2vh 5vw 0vh 4.3vw ;
+    justify-self: left ;
 }
 
 .overcards button{
-    padding: 0.5vw 1vh 0.5vw 1vh;
+    padding: 0.5vw 1vh 0.5vw 1vh ;
     background-color: white;
-    border-radius: 10px;
-    color: black;
+    border-radius: 10px ;
+    color: black ;
 }
 
 .webbody {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    justify-self: center;
+    display: grid ;
+    grid-template-columns: repeat(5, 1fr) ;
+    grid-template-rows: repeat(3, 1fr) ;
+    justify-self: center ;
 }
 
 .card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex ;
+    flex-direction: column ;
+    align-items: center ;
 }
 
 .card {
-    display: flex;
-    justify-content: center;
-    height: 45vh;
-    width: 15vw;
-    margin: 2.5vh 2vw 1vh 2vw;
-    border-radius: 5%;
-    overflow: hidden;
-    position: relative;
+    background-color: transparent ;
+    border-color: transparent ;
+    display: flex ;
+    justify-content: center ;
+    height: 45vh ;
+    width: 15vw ;
+    margin: 2.5vh 2vw 1vh 2vw ;
+    border-radius: 5% ;
+    overflow: hidden ;
+    position: relative ;
 }
 
 .card .flipper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: transform 0.5s;
+    position: absolute ;
+    top: 0 ;
+    left: 0 ;
+    width: 100% ;
+    height: 100% ;
+    transform-style: preserve-3d ;
+    transition: transform 0.5s ;
 }
 
 .card .flipper img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    backface-visibility: hidden;
+    position: absolute ;
+    top: 0 ;
+    left: 0 ;
+    width: 100% ;
+    height: 100% ;
+    object-fit: cover ;
+    backface-visibility: hidden ;
 }
 
 .card .flipper .description {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #252728;
-    color: #fff;
-    padding: 20px;
-    transform: rotateY(180deg);
-    backface-visibility: hidden;
+    position: absolute ;
+    top: 0 ;
+    left: 0 ;
+    width: 100% ;
+    height: 100% ;
+    background-color: #252728 ;
+    color: #fff ;
+    padding: 20px ;
+    transform: rotateY(180deg) ;
+    backface-visibility: hidden ;
 }
 
 .card:hover .flipper {
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) ;
 }
 
 .anime-name {
-    font-size: 2.5vh
+    font-size: 2.5vh ;
 }
 
 .card-actions {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    padding: 1vh;
-    gap: 1vh;
+    position: absolute ;
+    bottom: 0 ;
+    right: 0 ;
+    display: flex ;
+    justify-content: space-between ;
+    padding: 1vh ;
+    gap: 1vh ;
   }
   
   .update-button {
@@ -132,3 +232,27 @@
     cursor: pointer;
     font-size: 1.5vh;
   }
+
+  .form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: 3vh;
+    padding: 0vh 0.5vw 0vh 0.5vw;
+    color: rgb(46, 46, 46);
+    background-color: transparent;
+    background-clip: padding-box;
+    border: 1px solid rgb(190, 190, 190);
+    border-radius: 3px;
+}
+
+.successbutton{
+    background-color: rgb(0, 165, 0);
+}
+
+.successbutton:hover{
+    background-color: rgb(0, 110, 0);
+}
