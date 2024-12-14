@@ -56,13 +56,10 @@ export class AppService {
   async updateQuery(query: string, params: any[]): Promise<any> {
     let connection: oracledb.Connection;
     try {
-      console.log('Consulta SQL:', query);
-      console.log('Parámetros:', params);
-
       connection = await this.pool.getConnection();
       const result = await connection.execute(query, params, {
         autoCommit: true,
-        outFormat: oracledb.OUT_FORMAT_OBJECT
+        outFormat: oracledb.OUT_FORMAT_OBJECT,
       });
 
       console.log('Resultado:', result);
@@ -76,6 +73,5 @@ export class AppService {
       }
     }
   }
-
 
 }
