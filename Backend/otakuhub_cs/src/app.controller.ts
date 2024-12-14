@@ -35,8 +35,8 @@ export class AppController {
     console.log('Datos recibidos para crear:', body);
 
     // Validar el campo "puntuacion" para que cumpla con las restricciones de la columna
-    if (body.puntuacion && (body.puntuacion >= 10 || body.puntuacion < 0)) {
-      throw new Error('El campo "puntuacion" debe estar entre 0.0 y 9.9');
+    if (body.puntuacion && (body.puntuacion > 10 || body.puntuacion < 0)) {
+      throw new Error('El campo "puntuacion" debe estar entre 0 y 10');
     }
 
     const query = `INSERT INTO BDOO.ANIMES (

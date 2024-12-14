@@ -349,6 +349,18 @@ export default function Home() {
                 variant="primary"
                 className="successbutton"
                 onClick={() => {
+                  !selectedAnimeId && setFormulario({
+                    nombre: "",
+                    abreviatura: "",
+                    descripcion: "",
+                    imagen: "",
+                    puntuacion: 1,
+                    totalCapitulos: "",
+                    genero: { id: "", name: "" },
+                    estado: { id: "", name: "" },
+                    plataformas: { id: "1", name: "Crunchyroll" },
+                    estudios: { id: "", name: "" },
+                  });
                   executeFunction(formulario);
                 }}
               >
