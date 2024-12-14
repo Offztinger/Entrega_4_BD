@@ -43,3 +43,17 @@ export const PutAnime = async (data) => {
     console.error(error.message);
   }
 }
+
+export const deleteAnime = async (id) => {
+  if (!id) {
+    console.error("El ID del anime es inválido.");
+    return;
+  }
+
+  try {
+    await api.delete(`/animes?id=${id}`);
+    return await fetchAnimes(); 
+  } catch (error) {
+    console.error("Error al eliminar el anime:", error.message);
+  }
+};
