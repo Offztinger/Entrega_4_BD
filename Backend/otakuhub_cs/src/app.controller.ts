@@ -53,54 +53,57 @@ export class AppController {
     return this.appService.createQuery(query, params);
   }
 
-  // PUT: Actualizar un anime existente
-  // @Put()
-  // async updateAnime(
-  //   @Body()
-  //   body: {
-  //     id: number;
-  //     nombre?: string;
-  //     descripcion?: string;
-  //     generos?: string;
-  //     estado?: string;
-  //     imagen?: string;
-  //     puntuacion?: number;
-  //     totalCapitulos?: number;
-  //     estudios?: string;
-  //     plataformas?: string;
-  //   },
-  // ) {
-  //   console.log('Datos recibidos para actualizar:', body);
+  @Put()
+  async updateAnime(@Body() body: {
+    id: any;
+    nombre: string;
+    descripcion?: string;
+    generosId: any; // ID del género
+    generos: string;   // Nombre del género
+    estadoId: any;  // ID del estado
+    estado: string;    // Nombre del estado
+    imagen?: string;
+    puntuacion?: any;
+    totalCapitulos?: any;
+    estudiosId: any; // ID del estudio
+    estudios: string;   // Nombre del estudio
+    plataformasId: any; // ID de la plataforma
+    plataformas: string;   // Nombre de la plataforma
+  }) {
+    console.log('Datos recibidos para actualizar:', body);
 
-  //   const query = `
-  //     UPDATE ANIMES
-  //     SET
-  //       NOMBRE_ANV = :2,
-  //       DESCRIPCION_ANV = :3,
-  //       GENEROS_OBJ_DATA = GENEROS_OBJ(:4),
-  //       ESTADOS_OBJ_DATA = ESTADOS_OBJ(:5),
-  //       IMAGEN_ANV = :6,
-  //       PUNTUACION_ANV = :7,
-  //       TOTAL_CAPITULOS_ANV = :8,
-  //       ESTUDIOS_OBJ_DATA = ESTUDIOS_OBJ(:9),
-  //       PLATAFORMAS_OBJ_DATA = PLATAFORMAS_OBJ(:10)
-  //     WHERE ID_ANV = :1
-  //   `;
-  //   const params = [
-  //     body.id,
-  //     body.nombre || null,
-  //     body.descripcion || null,
-  //     body.generos || null,
-  //     body.estado || null,
-  //     body.imagen || null,
-  //     body.puntuacion || null,
-  //     body.totalCapitulos || null,
-  //     body.estudios || null,
-  //     body.plataformas || null,
-  //   ];
+    const query = `
+    BEGIN
+      UPDATE ANIMES SET
+      NOMBRE_ANV = :2, 
+      DESCRIPCION_ANV = :3, 
+      IMAGEN_ANV = :4, 
+      PUNTUACION_ANV = :5, 
+      TOTAL_CAPITULOS_ANV = :6,
+      ESTADOS_OBJ_DATA = ESTADOS_OBJ(2, :7), 
+      GENEROS_OBJ_DATA = GENEROS_OBJ(3, :8),
+      PLATAFORMAS_OBJ_DATA = PLATAFORMAS_OBJ(1, :9),
+      ESTUDIOS_OBJ_DATA = ESTUDIOS_OBJ(1, :10) 
+      WHERE ID_ANV = :1; COMMIT;
+    END;`;
 
-  //   return this.appService.useQuery(query, params);
-  // }
+    const params = [
+      2,                  // ID_ANV (number)
+      'Shingeki no Kyojin', // NOMBRE_ANV (string)
+      'Tatakae Eren',     // DESCRIPCION_ANV (string)
+      'aot_updated.jpg',  // IMAGEN_ANV (string)
+      9.9,                // PUNTUACION_ANV (number)
+      76,                 // TOTAL_CAPITULOS_ANV (number)
+      'Finalizado',       // NOMBRE_EST (string)
+      'Romance',          // NOMBRE_GEN (string)
+      'Crunchyroll',       // NOMBRE_PTF (string)
+      'Wit Studio'      // NOMBRE_STD (string)
+    ];
+
+    console.log('Parámetros enviados al servicio:', params);
+    return this.appService.updateQuery(query, params);
+  }
+
 
   // DELETE: Eliminar un anime por ID
   // @Delete()
