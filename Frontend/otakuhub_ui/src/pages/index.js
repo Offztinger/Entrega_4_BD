@@ -8,6 +8,80 @@ export default function Home() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [formulario, setFormulario] = useState({});
+  const [animeData, setAnimeData] = useState([
+    {
+      ID_ANV: 101,
+      NOMBRE_ANV: "Dragon Ball Super",
+      DESCRIPCION_ANV: "Super mamada de Kira",
+      IMAGEN_ANV: "https://images.justwatch.com/poster/124651375/s718/dragon-ball-super.jpg",
+      PUNTUACION_ANV: 9.9,
+      TOTAL_CAPITULOS_ANV: 76,
+      ESTADOS_OBJ_DATA: {
+        ID_EST: 1,
+        NOMBRE_EST: "En emisión",
+      },
+      GENEROS_OBJ_DATA: {
+        ID_GEN: 1,
+        NOMBRE_GEN: "Acción",
+      },
+      PLATAFORMAS_OBJ_DATA: {
+        ID_PTF: 1,
+        NOMBRE_PTF: "Crunchyroll",
+      },
+      ESTUDIOS_OBJ_DATA: {
+        ID_STD: 1,
+        NOMBRE_STD: "Toei Animation",
+      },
+    },
+    {
+      ID_ANV: 102,
+      NOMBRE_ANV: "Death Note",
+      DESCRIPCION_ANV: "A young man discovers a notebook that grants him the power to kill anyone.",
+      IMAGEN_ANV: "https://upload.wikimedia.org/wikipedia/en/6/6f/Death_Note_Vol_1.jpg",
+      PUNTUACION_ANV: 9.8,
+      TOTAL_CAPITULOS_ANV: 37,
+      ESTADOS_OBJ_DATA: {
+        ID_EST: 2,
+        NOMBRE_EST: "Finalizado",
+      },
+      GENEROS_OBJ_DATA: {
+        ID_GEN: 12,
+        NOMBRE_GEN: "Misterio",
+      },
+      PLATAFORMAS_OBJ_DATA: {
+        ID_PTF: 2,
+        NOMBRE_PTF: "Netflix",
+      },
+      ESTUDIOS_OBJ_DATA: {
+        ID_STD: 3,
+        NOMBRE_STD: "Madhouse",
+      },
+    },
+  ]);
+
+  const [selectedAnimeId, setSelectedAnimeId] = useState(null); 
+
+  const handleEdit = (id) => {
+    setSelectedAnimeId(id);
+    setShowCreateModal(true);
+  };
+
+  useEffect(() => {
+    if (showCreateModal && selectedAnimeId) {
+      const animeToEdit = animeData.find(anime => anime.ID_ANV === selectedAnimeId);
+      if (animeToEdit) {
+        setFormulario({
+          nombreAnime: animeToEdit.NOMBRE_ANV,
+          descripcion: animeToEdit.DESCRIPCION_ANV,
+          totalcaps: animeToEdit.TOTAL_CAPITULOS_ANV,
+          genero: animeToEdit.GENEROS_OBJ_DATA,
+          actualstatus: animeToEdit.ESTADOS_OBJ_DATA.NOMBRE_EST,
+          estudios: animeToEdit.ESTUDIOS_OBJ_DATA.NOMBRE_STD,
+          puntuacion: animeToEdit.PUNTUACION_ANV,
+        });
+      }
+    }
+  }, [showCreateModal, selectedAnimeId]);
 
   const generosDisponibles = [
     { id: 1, name: "Fantasía" },
@@ -50,7 +124,7 @@ export default function Home() {
       ...formulario,
       genero: selectedGenero || { id: '', name: '' },
     });
-    console.log(selectedGenero)
+    console.log(selectedAnimeId)
   };
 
   useEffect(() => {
@@ -125,44 +199,30 @@ export default function Home() {
       <Modal
         className="modal-overlay"
         show={showCreateModal}
-        dialogClassName=''
-        onHide={() => hideModal(setShowCreateModal)}
-        onEntered={() => showModal(setShowCreateModal)}
-        onExit={() => hideModal(setShowCreateModal)}
+        onHide={() => setShowCreateModal(false)}
+        dialogClassName=""
       >
         <div className="floating-modal">
           <Modal.Header closeButton>
-            <Modal.Title>
-              Añadir Anime
-            </Modal.Title>
+            <Modal.Title>{selectedAnimeId ? "Editar Anime" : "Añadir Anime"}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className='form-group'>
+            <div className="form-group">
               <label>Nombre del Anime</label>
               <input
-                type='text'
-                name='nombreAnime'
-                className='form-control'
+                type="text"
+                name="nombreAnime"
+                className="form-control"
                 value={formulario.nombreAnime || ''}
                 onChange={handleChange}
               />
             </div>
-            <div className='form-group'>
-              <label>Abreviatura (Ruta o imagen)</label>
-              <input
-                type='text'
-                name='abreviatura'
-                className='form-control'
-                value={formulario.abreviatura || ''}
-                onChange={handleChange}
-              />
-            </div>
-            <div className='form-group'>
+            <div className="form-group">
               <label>Descripción</label>
               <input
-                type='text'
-                name='descripcion'
-                className='form-control'
+                type="text"
+                name="descripcion"
+                className="form-control"
                 value={formulario.descripcion || ''}
                 onChange={handleChange}
               />
@@ -182,7 +242,7 @@ export default function Home() {
               <select
                 name='genero'
                 className='form-control'
-                value={formulario.genero.id || ''}
+                value={formulario.genero?.id || ''}
                 onChange={handleGeneroChange}
               >
                 <option value="">Seleccione un género</option>
@@ -264,27 +324,37 @@ export default function Home() {
         }}>Agregar anime</button>
       </div>
       <div className="webbody">
-        <div className="card-container">
-          <div className="card">
-            <div className="flipper">
-              <img src="https://upload.wikimedia.org/wikipedia/en/6/6f/Death_Note_Vol_1.jpg" alt="Anime Cover" />
-              <div className="description">Example description</div>
-            </div>
-            <div className="card-actions">
-              <button className="update-button" data-tooltip-id="my-tooltip" data-tooltip-content="Actualizar Anime" onClick={() => {
-                setShowCreateModal(true);
-              }}>
-                <i className="fas fa-pen"></i>
-              </button>
-              <button className="delete-button" data-tooltip-id="my-tooltip" data-tooltip-content="Eliminar Anime" onClick={() => {
-                setShowDeleteModal(true);
-              }}>
-                <i className="fas fa-trash"></i>
-              </button>
+        {animeData.map(anime => (
+          <div key={anime.ID_ANV} className="card-container">
+            <div className="card">
+              <div className="flipper">
+                <img src={anime.IMAGEN_ANV} alt={`${anime.NOMBRE_ANV} Cover`} />
+                <div className="description">
+                  <h3>{anime.NOMBRE_ANV}</h3>
+                  <p>{anime.DESCRIPCION_ANV}</p>
+                </div>
+              </div>
+              <div className="card-actions">
+                <button
+                  className="update-button"
+                  data-tooltip-id="my-tooltip"
+                  data-tooltip-content="Actualizar Anime"
+                  onClick={() => handleEdit(anime.ID_ANV)} // Pasar el ID del anime al hacer clic
+                >
+                  <i className="fas fa-pen"></i>
+                </button>
+                <button
+                  className="delete-button"
+                  data-tooltip-id="my-tooltip"
+                  data-tooltip-content="Eliminar Anime"
+                  onClick={() => setShowDeleteModal(true)}
+                >
+                  <i className="fas fa-trash"></i>
+                </button>
+              </div>
             </div>
           </div>
-          <div className="anime-name">Anime Name</div>
-        </div>
+        ))}
       </div>
       <Tooltip id="my-tooltip" />
     </div>
