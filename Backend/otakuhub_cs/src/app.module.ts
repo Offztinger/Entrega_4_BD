@@ -14,7 +14,7 @@ import { AppService } from './app.service';
       useFactory: async () => {
         try {
           await oracledb.createPool({
-            user: 'BDOTH',
+            user: 'BDOO',
             password: '123',
             connectString: 'localhost:1521',
           });

@@ -33,7 +33,7 @@ export class AppService {
     let connection: oracledb.Connection;
     try {
       console.log('Consulta SQL:', query);
-      console.log('Parámetros:', params);
+      console.log('Parámetros:', params.length > 0 ? params : 'Sin parámetros');
 
       connection = await this.pool.getConnection();
       const result = await connection.execute(query, params, {
@@ -55,6 +55,10 @@ export class AppService {
 
   async updateQuery(query: string, params: any[]): Promise<any> {
     let connection: oracledb.Connection;
+
+    console.log('Consulta SQL:', query);
+    console.log('Parámetros:', params.length > 0 ? params : 'Sin parámetros');
+
     try {
       connection = await this.pool.getConnection();
       const result = await connection.execute(query, params, {
@@ -77,14 +81,14 @@ export class AppService {
   async deleteQuery(query: string, params: any[]): Promise<any> {
     let connection: oracledb.Connection;
     try {
-      console.log('Consulta SQL para eliminar:', query);
-      console.log('Parámetros:', params);
-  
+      console.log('Consulta SQL:', query);
+      console.log('Parámetros:', params.length > 0 ? params : 'Sin parámetros');
+
       connection = await this.pool.getConnection();
       const result = await connection.execute(query, params, {
         autoCommit: true, // Confirma automáticamente los cambios
       });
-  
+
       console.log('Resultado de la eliminación:', result);
       return { success: true, message: 'Registro eliminado con éxito' };
     } catch (err) {
@@ -96,6 +100,4 @@ export class AppService {
       }
     }
   }
-  
-
 }
