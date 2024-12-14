@@ -3,17 +3,25 @@ import "../app/styles/index.css";
 import { Tooltip } from "react-tooltip";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { getAnimes } from "@/utils/handler";
-import { generosDisponibles } from "@/utils/constants";
-import { fetchAnimes } from "@/utils/axiosConfig";
+import { generosDisponibles, estadoActual } from "@/utils/constants";
+import { fetchAnimes, fetchAnimesByID, PostAnime, PutAnime } from "@/utils/axiosConfig";
 
 export default function Home() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [formulario, setFormulario] = useState({});
   const [animeData, setAnimeData] = useState([]);
-
+  const [animeToEdit, setAnimeToEdit] = useState([]);
   const [selectedAnimeId, setSelectedAnimeId] = useState(null);
+
+  const executeFunction = async (data) => {
+    if (selectedAnimeId != null) {
+      const response = await PutAnime(data)
+    } else {
+      const response = await PostAnime(data)
+    }
+    hideModal(setShowCreateModal);
+  }
 
   const handleEdit = (id) => {
     setSelectedAnimeId(id);
@@ -31,23 +39,31 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (showCreateModal && selectedAnimeId) {
-      const animeToEdit = animeData.find(
-        (anime) => anime.ID_ANV === selectedAnimeId
-      );
-      if (animeToEdit) {
-        setFormulario({
-          nombreAnime: animeToEdit.NOMBRE_ANV,
-          descripcion: animeToEdit.DESCRIPCION_ANV,
-          totalcaps: animeToEdit.TOTAL_CAPITULOS_ANV,
-          genero: animeToEdit.GENEROS_OBJ_DATA,
-          actualstatus: animeToEdit.ESTADOS_OBJ_DATA.NOMBRE_EST,
-          estudios: animeToEdit.ESTUDIOS_OBJ_DATA.NOMBRE_STD,
-          puntuacion: animeToEdit.PUNTUACION_ANV,
-        });
-      }
+    const fetchData = async () => {
+      const result = await fetchAnimesByID(selectedAnimeId)
+      setAnimeToEdit(result);
+    };
+    if(selectedAnimeId){
+      fetchData()
     }
-  }, [showCreateModal, selectedAnimeId]);
+  }, [selectedAnimeId]);
+
+  useEffect(() =>{
+    console.log(animeToEdit);
+    if (animeToEdit) {
+      setFormulario({
+        nombre: animeToEdit.NOMBRE_ANV,
+        descripcion: animeToEdit.DESCRIPCION_ANV,
+        imagen: animeToEdit.IMAGEN_ANV,
+        puntuacion: animeToEdit.PUNTUACION_ANV,
+        totalCapitulos: animeToEdit.TOTAL_CAPITULOS_ANV,
+        estado: {id: animeToEdit.ESTADOS_OBJ_DATA.ID_EST, name: animeToEdit.ESTADOS_OBJ_DATA.NOMBRE_EST},
+        genero: {id: animeToEdit.GENEROS_OBJ_DATA.ID_GEN, name: animeToEdit.GENEROS_OBJ_DATA.NOMBRE_GEN},
+        plataformas: {id: animeToEdit.PLATAFORMAS_OBJ_DATA.ID_PTF, name: animeToEdit.ESTUDIOS_OBJ_DATA.NOMBRE_PTF},
+        estudios: {id: animeToEdit.ESTUDIOS_OBJ_DATA.ID_STD, name: animeToEdit.ESTUDIOS_OBJ_DATA.NOMBRE_STD},
+      });
+    }
+  }, [animeToEdit]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,23 +90,42 @@ export default function Home() {
       ...formulario,
       genero: selectedGenero || { id: "", name: "" },
     });
-    console.log(selectedAnimeId);
+  };
+
+  const handleEstadoChange = (e) => {
+    const selectedId = parseInt(e.target.value, 10);
+    const selectedEstado = estadoActual.find(
+      (estado) => estado.id === selectedId
+    );
+    setFormulario({
+      ...formulario,
+      estado: selectedEstado || { id: "", name: "" },
+    });
   };
 
   useEffect(() => {
     if (showCreateModal) {
-      setFormulario({
-        nombreAnime: "",
+      selectedAnimeId != null && setFormulario({
+        nombre: "",
         abreviatura: "",
         descripcion: "",
-        totalcaps: "",
-        genero: { id: "", name: "" },
-        actualstatus: "",
-        estudios: "",
+        imagen: "",
         puntuacion: 1,
+        totalCapitulos: "",
+        genero: { id: "", name: "" },
+        estado: { id: "", name: "" },
+        plataformas: { id: "1", name: "Crunchyroll" },
+        estudios: { id: "", name: "" },
       });
+    } else {
+      setSelectedAnimeId(null)
     }
   }, [showCreateModal]);
+
+
+  useEffect(() => {
+    console.log(selectedAnimeId);
+  }, [selectedAnimeId]);
 
   const showModal = (setter) => {
     setter(true);
@@ -163,9 +198,9 @@ export default function Home() {
               <label>Nombre del Anime</label>
               <input
                 type="text"
-                name="nombreAnime"
+                name="nombre"
                 className="form-control"
-                value={formulario.nombreAnime || ""}
+                value={formulario.nombre || ""}
                 onChange={handleChange}
               />
             </div>
@@ -180,12 +215,22 @@ export default function Home() {
               />
             </div>
             <div className="form-group">
+              <label>Imagen (URL)</label>
+              <input
+                type="text"
+                name="imagen"
+                className="form-control"
+                value={formulario.imagen || ""}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
               <label>Total de capítulos</label>
               <input
                 type="number"
-                name="totalcaps"
+                name="totalCapitulos"
                 className="form-control"
-                value={formulario.totalcaps || ""}
+                value={formulario.totalCapitulos || ""}
                 onChange={handleChange}
               />
             </div>
@@ -206,16 +251,19 @@ export default function Home() {
               </select>
             </div>
             <div className="form-group">
-              <label>Estado actual</label>
+            <label>Estado Actual</label>
               <select
-                name="actualstatus"
+                name="estado"
                 className="form-control"
-                value={formulario.actualstatus || ""}
-                onChange={handleChange}
+                value={formulario.estado?.id || ""}
+                onChange={handleEstadoChange}
               >
-                <option value="">Seleccione una opción</option>
-                <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
+                <option value="">Seleccione un estado</option>
+                {estadoActual.map((estado) => (
+                  <option key={estado.id} value={estado.id}>
+                    {estado.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="form-group">
@@ -259,7 +307,7 @@ export default function Home() {
               variant="primary"
               className="successbutton"
               onClick={() => {
-                hideModal(setShowCreateModal);
+                executeFunction(formulario)
               }}
             >
               Añadir Anime
