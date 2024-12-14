@@ -15,3 +15,10 @@ export const generosDisponibles = [
     { id: 14, name: "Thriller" },
     { id: 15, name: "Comedia" },
   ];
+
+export const estadoActual = [
+    {id: 1, name: "En Emisión"},
+    {id: 2, name: "Finalizado"},
+    {id: 3, name: "Pausado"},
+    {id: 4, name: "Cancelado"},
+  ];
