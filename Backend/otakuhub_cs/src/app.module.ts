@@ -1,6 +1,7 @@
 
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import * as oracledb from 'oracledb';
+import * as cors from 'cors';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -29,4 +30,23 @@ import { AppService } from './app.service';
     },
   ],
 })
-export class AppModule { }
+
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cors({
+          origin: '*', // Permitir este origen
+          methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Métodos permitidos
+          allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'ngrok-skip-browser-warning', // Encabezado permitido
+          ],
+          credentials: true, // Permitir cookies o credenciales
+        }),
+      )
+      .forRoutes('*'); // Aplica CORS a todas las rutas
+  }
+}
+
