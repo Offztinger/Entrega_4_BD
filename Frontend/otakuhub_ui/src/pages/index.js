@@ -402,6 +402,11 @@ export default function Home() {
                     <div className="description">
                       <h3>{anime.NOMBRE_ANV}</h3>
                       <p>{anime.DESCRIPCION_ANV}</p>
+                      <p>Total de capitulos: {anime.TOTAL_CAPITULOS_ANV}</p>
+                      <p>Estado actual: {anime.ESTADOS_OBJ_DATA?.NOMBRE_EST}</p>
+                      <p>Género: {anime.GENEROS_OBJ_DATA?.NOMBRE_GEN}</p>
+                      <p>Plataforma: {anime.PLATAFORMAS_OBJ_DATA?.NOMBRE_PTF}</p>
+                      <p>Estudio: {anime.ESTUDIOS_OBJ_DATA?.NOMBRE_STD}</p>
                     </div>
                   </div>
                   <div className="card-actions">
