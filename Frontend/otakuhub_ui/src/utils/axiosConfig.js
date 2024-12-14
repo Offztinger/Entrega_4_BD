@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://eddd-186-121-29-147.ngrok-free.app",
+  baseURL: "http://localhost:3000",
   headers: {
     "Content-Type": "application/json",
     "ngrok-skip-browser-warning": "true",
@@ -28,21 +28,21 @@ export const fetchAnimesByID = async (id) => {
 
 export const PostAnime = async (data) => {
   try {
-    await api.post("/animes", data)
+    await api.post("/animes", data);
     return await fetchAnimes();
   } catch (error) {
     console.error(error.message);
   }
-}
+};
 
 export const PutAnime = async (data) => {
   try {
-    await api.put("/animes", data)
+    await api.put("/animes", data);
     return await fetchAnimes();
   } catch (error) {
     console.error(error.message);
   }
-}
+};
 
 export const deleteAnime = async (id) => {
   if (!id) {
@@ -52,7 +52,7 @@ export const deleteAnime = async (id) => {
 
   try {
     await api.delete(`/animes?id=${id}`);
-    return await fetchAnimes(); 
+    return await fetchAnimes();
   } catch (error) {
     console.error("Error al eliminar el anime:", error.message);
   }
