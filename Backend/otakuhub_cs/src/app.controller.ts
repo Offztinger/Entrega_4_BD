@@ -53,60 +53,53 @@ export class AppController {
     return this.appService.createQuery(query, params);
   }
 
-  // PUT: Actualizar un anime existente
-  // @Put()
-  // async updateAnime(
-  //   @Body()
-  //   body: {
-  //     id: number;
-  //     nombre?: string;
-  //     descripcion?: string;
-  //     generos?: string;
-  //     estado?: string;
-  //     imagen?: string;
-  //     puntuacion?: number;
-  //     totalCapitulos?: number;
-  //     estudios?: string;
-  //     plataformas?: string;
-  //   },
-  // ) {
-  //   console.log('Datos recibidos para actualizar:', body);
+  @Put()
+  async updateAnime(@Body() body: {
+    id: number; // ID del anime
+    nombre: string;
+    descripcion?: string;
+    imagen?: string;
+    puntuacion?: number;
+    totalCapitulos?: number;
+  }) {
+    console.log('Datos recibidos para actualizar:', body);
 
-  //   const query = `
-  //     UPDATE ANIMES
-  //     SET
-  //       NOMBRE_ANV = :2,
-  //       DESCRIPCION_ANV = :3,
-  //       GENEROS_OBJ_DATA = GENEROS_OBJ(:4),
-  //       ESTADOS_OBJ_DATA = ESTADOS_OBJ(:5),
-  //       IMAGEN_ANV = :6,
-  //       PUNTUACION_ANV = :7,
-  //       TOTAL_CAPITULOS_ANV = :8,
-  //       ESTUDIOS_OBJ_DATA = ESTUDIOS_OBJ(:9),
-  //       PLATAFORMAS_OBJ_DATA = PLATAFORMAS_OBJ(:10)
-  //     WHERE ID_ANV = :1
-  //   `;
-  //   const params = [
-  //     body.id,
-  //     body.nombre || null,
-  //     body.descripcion || null,
-  //     body.generos || null,
-  //     body.estado || null,
-  //     body.imagen || null,
-  //     body.puntuacion || null,
-  //     body.totalCapitulos || null,
-  //     body.estudios || null,
-  //     body.plataformas || null,
-  //   ];
+    // Validación de que el ID existe
+    if (!body.id) {
+      throw new Error('El campo "id" es obligatorio');
+    }
 
-  //   return this.appService.useQuery(query, params);
-  // }
+    const query = `
+      UPDATE ANIMES SET
+      NOMBRE_ANV = :1,
+      DESCRIPCION_ANV = :2,
+      IMAGEN_ANV = :3,
+      PUNTUACION_ANV = :4,
+      TOTAL_CAPITULOS_ANV = :5
+      WHERE ID_ANV = ${body.id}`;
 
-  // DELETE: Eliminar un anime por ID
-  // @Delete()
-  // async deleteAnime(@Query('id', ParseIntPipe) id: number) {
-  //   console.log('ID recibido para eliminar:', id);
-  //   const query = 'DELETE FROM ANIMES WHERE ID_ANV = :1';
-  //   return this.appService.useQuery(query, [id]);
-  // }
+    const params = [
+      body.nombre || null, // NOMBRE_ANV
+      body.descripcion || null, // DESCRIPCION_ANV
+      body.imagen || null, // IMAGEN_ANV
+      body.puntuacion || null, // PUNTUACION_ANV
+      body.totalCapitulos || null, // TOTAL_CAPITULOS_ANV
+    ];
+
+    console.log('Parámetros enviados al servicio:', params);
+
+    return this.appService.updateQuery(query, params);
+  }
+
+  @Delete()
+  async deleteAnime(@Query('id', ParseIntPipe) id: number) {
+    console.log('ID recibido para eliminar:', id);
+  
+    if (!id) {
+      throw new Error('El campo "id" es obligatorio');
+    }
+  
+    const query = 'DELETE FROM ANIMES WHERE ID_ANV = :1';
+    return this.appService.deleteQuery(query, [id]);
+  }
 }

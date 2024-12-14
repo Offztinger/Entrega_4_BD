@@ -1,3 +1,4 @@
+
 import { Module } from '@nestjs/common';
 import * as oracledb from 'oracledb';
 import { AppController } from './app.controller';
@@ -13,7 +14,7 @@ import { AppService } from './app.service';
       useFactory: async () => {
         try {
           await oracledb.createPool({
-            user: 'BDOO',
+            user: 'BDOTH',
             password: '123',
             connectString: 'localhost:1521',
           });
